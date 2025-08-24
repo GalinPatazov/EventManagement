@@ -11,6 +11,13 @@ namespace EventManagement.Services
         public DateTime DateOfBirth { get; set; }
 
         public ICollection<Registration> Registrations { get; set; }
+        public User(int userId, string firstName, string lastNmae, string email) {
+            UserId = userId;
+            FirstName = firstName;
+            LastName = lastNmae;
+            Email = email;
+        }
+        public User() { }
 
     }
 }

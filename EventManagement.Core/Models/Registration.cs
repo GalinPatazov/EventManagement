@@ -12,5 +12,13 @@ namespace EventManagement.InfraStructure
 
         public User User { get; set;}
         public Event Event { get; set;} 
+
+        public Registration(int registrationId, int userId, int eventId) {
+            RegistrationId = registrationId;
+            UserId = userId;
+            EventId = eventId;
+        }
+
+        public Registration() { }
     }
 }

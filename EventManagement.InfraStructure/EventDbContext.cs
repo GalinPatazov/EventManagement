@@ -16,6 +16,14 @@ namespace EventManagement.InfraStructure
         public DbSet<Speaker> Speakers { get; set; }
         public DbSet<Registration> Registrations { get; set; }
 
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite("Data Source=eventmanagement.db");
+            }
+        }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
@@ -31,6 +39,7 @@ namespace EventManagement.InfraStructure
                 .HasForeignKey(r => r.EventId);
 
         }
+
 
     }
 }

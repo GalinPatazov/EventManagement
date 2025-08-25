@@ -1,4 +1,6 @@
-﻿using EventManagement.Core.Models;
+﻿using AutoMapper;
+using EventManagement.Core.DTOs;
+using EventManagement.Core.Models;
 using EventManagement.Services.Services;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,10 +11,12 @@ namespace EventManagement.Controllers
     public class EventController : ControllerBase
     {
         private readonly EventService _eventService;
+        private readonly IMapper _mapper;
 
-        public EventController(EventService eventService)
+        public EventController(EventService eventService, IMapper mapper)
         {
             _eventService = eventService;
+            _mapper = mapper;
         }
 
         // GET: api/event
@@ -20,7 +24,8 @@ namespace EventManagement.Controllers
         public async Task<IActionResult> GetAll()
         {
             var events = await _eventService.GetAllAsync();
-            return Ok(events);
+            var eventDtos = _mapper.Map<List<EventDTO>>(events);
+            return Ok(eventDtos);
         }
 
         // GET: api/event/{id}
@@ -29,17 +34,22 @@ namespace EventManagement.Controllers
         {
             var ev = await _eventService.GetByIdAsync(id);
             if (ev == null) return NotFound();
-            return Ok(ev);
+
+            var eventDto = _mapper.Map<EventDTO>(ev);
+            return Ok(eventDto);
         }
 
         // POST: api/event
         [HttpPost]
-        public async Task<IActionResult> Create(Event model)
+        public async Task<IActionResult> Create(EventDTO model)
         {
             try
             {
-                var created = await _eventService.AddAsync(model);
-                return CreatedAtAction(nameof(Get), new { id = created.EventId }, created);
+                var entity = _mapper.Map<Event>(model);
+                var created = await _eventService.AddAsync(entity);
+                var createdDto = _mapper.Map<EventDTO>(created);
+
+                return CreatedAtAction(nameof(Get), new { id = createdDto.EventId }, createdDto);
             }
             catch (FluentValidation.ValidationException ex)
             {
@@ -49,14 +59,17 @@ namespace EventManagement.Controllers
 
         // PUT: api/event/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Event model)
+        public async Task<IActionResult> Update(int id, EventDTO model)
         {
             if (id != model.EventId) return BadRequest("Event ID mismatch");
 
             try
             {
-                var updated = await _eventService.UpdateAsync(model);
-                return Ok(updated);
+                var entity = _mapper.Map<Event>(model);
+                var updated = await _eventService.UpdateAsync(entity);
+                var updatedDto = _mapper.Map<EventDTO>(updated);
+
+                return Ok(updatedDto);
             }
             catch (FluentValidation.ValidationException ex)
             {
@@ -72,14 +85,14 @@ namespace EventManagement.Controllers
             return NoContent();
         }
 
-        // Complex queries
-
         // GET: api/event/user/{userId}?upcomingOnly=true
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetEventsByUser(int userId, bool upcomingOnly = true)
         {
             var events = await _eventService.GetEventsByUser(userId, upcomingOnly);
-            return Ok(events);
+            var eventDtos = _mapper.Map<List<EventDTO>>(events);
+
+            return Ok(eventDtos);
         }
 
         // GET: api/event/{eventId}/users
@@ -87,7 +100,9 @@ namespace EventManagement.Controllers
         public async Task<IActionResult> GetUsersByEvent(int eventId)
         {
             var users = await _eventService.GetUsersByEvent(eventId);
-            return Ok(users);
+            var userDtos = _mapper.Map<List<UserDTO>>(users);
+
+            return Ok(userDtos);
         }
 
         // GET: api/event/upcoming
@@ -95,7 +110,9 @@ namespace EventManagement.Controllers
         public async Task<IActionResult> GetUpcomingEventsWithSpeakers()
         {
             var events = await _eventService.GetUpcomingEventsWithSpeakers();
-            return Ok(events);
+            var eventDtos = _mapper.Map<List<EventDTO>>(events);
+
+            return Ok(eventDtos);
         }
     }
 }

@@ -1,8 +1,9 @@
 using EventManagement.InfraStructure;
+using EventManagement.InfraStructure.Mapper;
 using EventManagement.Services.Validators;
 using FluentValidation;
 using Microsoft.EntityFrameworkCore;
-using System;
+using Microsoft.Extensions.DependencyInjection;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,13 +12,14 @@ builder.Services.AddDbContext<EventDbContext>(options =>
 
 builder.Services.AddControllers();
 
-var app = builder.Build();
+builder.Services.AddValidatorsFromAssemblyContaining<EventValidator>();
 
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+
+var app = builder.Build();
 
 app.UseHttpsRedirection();
 
 app.MapControllers();
 
 app.Run();
-
-builder.Services.AddValidatorsFromAssemblyContaining<EventValidator>();

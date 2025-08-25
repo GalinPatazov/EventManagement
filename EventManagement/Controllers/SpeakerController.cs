@@ -1,4 +1,6 @@
-﻿using EventManagement.InfraStructure;
+﻿using AutoMapper;
+using EventManagement.Core.DTOs;
+using EventManagement.InfraStructure;
 using EventManagement.Services.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
@@ -10,46 +12,73 @@ namespace EventManagement.Controllers
     public class SpeakerController : ControllerBase
     {
         private readonly SpeakerService _speakerService;
+        private readonly IMapper _mapper;
 
-        public SpeakerController(SpeakerService speakerService)
+        public SpeakerController(SpeakerService speakerService, IMapper mapper)
         {
             _speakerService = speakerService;
+            _mapper = mapper;
         }
 
+        // GET: api/speaker
         [HttpGet]
-        public async Task<IActionResult> GetAll() => Ok(await _speakerService.GetAllAsync());
+        public async Task<IActionResult> GetAll()
+        {
+            var speakers = await _speakerService.GetAllAsync();
+            var dtos = _mapper.Map<List<SpeakerDTO>>(speakers);
+            return Ok(dtos);
+        }
 
+        // GET: api/speaker/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
             var speaker = await _speakerService.GetByIdAsync(id);
-            return speaker == null ? NotFound() : Ok(speaker);
+            if (speaker == null) return NotFound();
+
+            var dto = _mapper.Map<SpeakerDTO>(speaker);
+            return Ok(dto);
         }
 
+        // POST: api/speaker
         [HttpPost]
-        public async Task<IActionResult> Create(Speaker model)
+        public async Task<IActionResult> Create(SpeakerDTO model)
         {
             try
             {
-                var created = await _speakerService.AddAsync(model);
-                return CreatedAtAction(nameof(Get), new { id = created.SpeakerID }, created);
+                var entity = _mapper.Map<Speaker>(model);
+                var created = await _speakerService.AddAsync(entity);
+                var dto = _mapper.Map<SpeakerDTO>(created);
+
+                return CreatedAtAction(nameof(Get), new { id = dto.SpeakerID }, dto);
             }
-            catch (ValidationException ex) { return BadRequest(ex.Errors); }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Errors);
+            }
         }
 
+        // PUT: api/speaker/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, Speaker model)
+        public async Task<IActionResult> Update(int id, SpeakerDTO model)
         {
             if (id != model.SpeakerID) return BadRequest("Speaker ID mismatch");
 
             try
             {
-                var updated = await _speakerService.UpdateAsync(model);
-                return Ok(updated);
+                var entity = _mapper.Map<Speaker>(model);
+                var updated = await _speakerService.UpdateAsync(entity);
+                var dto = _mapper.Map<SpeakerDTO>(updated);
+
+                return Ok(dto);
             }
-            catch (ValidationException ex) { return BadRequest(ex.Errors); }
+            catch (ValidationException ex)
+            {
+                return BadRequest(ex.Errors);
+            }
         }
 
+        // DELETE: api/speaker/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -59,7 +88,11 @@ namespace EventManagement.Controllers
 
         // GET: api/speaker/by-event/{eventId}
         [HttpGet("by-event/{eventId}")]
-        public async Task<IActionResult> GetSpeakersByEvent(int eventId) =>
-            Ok(await _speakerService.GetSpeakersByEvent(eventId));
+        public async Task<IActionResult> GetSpeakersByEvent(int eventId)
+        {
+            var speakers = await _speakerService.GetSpeakersByEvent(eventId);
+            var dtos = _mapper.Map<List<SpeakerDTO>>(speakers);
+            return Ok(dtos);
+        }
     }
 }

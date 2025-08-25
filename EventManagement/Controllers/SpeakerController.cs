@@ -94,5 +94,5 @@ namespace EventManagement.Controllers
             var dtos = _mapper.Map<List<SpeakerDTO>>(speakers);
             return Ok(dtos);
         }
-    }
+    }   
 }

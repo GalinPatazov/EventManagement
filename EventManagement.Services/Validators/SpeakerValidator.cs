@@ -12,9 +12,9 @@ namespace EventManagement.Services.Validators
     {
         public SpeakerValidator()
         {
-            RuleFor(s => s.Email)
-                .NotEmpty()
-                .EmailAddress().WithMessage("Invalid email format");
+            RuleFor(s => s.Name).NotEmpty();
+            RuleFor(s => s.Biography).NotEmpty();
+            RuleFor(s => s.Email).NotEmpty().EmailAddress();
         }
     }
 }

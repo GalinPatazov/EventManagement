@@ -1,24 +1,35 @@
 ﻿using EventManagement.Core.Models;
 using EventManagement.Services;
+using System.ComponentModel.DataAnnotations;
 
 namespace EventManagement.InfraStructure
 {
     public class Registration
     {
-        public int RegistrationId { get; set;}
-        public int UserId { get; set;}
-        public int EventId { get; set;}
-        public DateTime RegistrationDate {  get; set;}
+        [Key]
+        public int RegistrationId { get; set; }
 
-        public User User { get; set;}
-        public Event Event { get; set;} 
+        [Required]
+        public int UserId { get; set; }
 
-        public Registration(int registrationId, int userId, int eventId) {
+        [Required]
+        public int EventId { get; set; }
+
+        [Required]
+        public DateTime RegistrationDate { get; set; }
+
+        
+        public User User { get; set; }
+        public Event Event { get; set; }
+
+        public Registration() { }
+
+        public Registration(int registrationId, int userId, int eventId)
+        {
             RegistrationId = registrationId;
             UserId = userId;
             EventId = eventId;
+            RegistrationDate = DateTime.Now;
         }
-
-        public Registration() { }
     }
 }

@@ -15,6 +15,9 @@ namespace EventManagement.InfraStructure
         public DbSet<User> Users{ get; set; }
         public DbSet<Speaker> Speakers { get; set; }
         public DbSet<Registration> Registrations { get; set; }
+        public EventDbContext(DbContextOptions<EventDbContext> options) : base(options)
+        {
+        }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

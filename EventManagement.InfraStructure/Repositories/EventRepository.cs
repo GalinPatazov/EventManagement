@@ -60,16 +60,16 @@ namespace EventManagement.InfraStructure.Repositories
             }
         }
 
-        
 
-        
+
+
         public async Task<List<Event>> GetEventsByUser(int userId, bool upcomingOnly)
         {
-            var query = _context.Registrations
-                .Where(r => r.UserId == userId)
-                .Select(r => r.Event)
-                .Include(e => e.Speaker)
-                .AsQueryable();
+                        var query = _context.Events
+                .Include(e => e.Speaker)               
+                .Include(e => e.Registrations)       
+                .ThenInclude(r => r.User)             
+                .Where(e => e.Registrations.Any(r => r.UserId == userId)); 
 
             if (upcomingOnly)
                 query = query.Where(e => e.Date > DateTime.Now);
@@ -79,7 +79,9 @@ namespace EventManagement.InfraStructure.Repositories
             return await query.ToListAsync();
         }
 
-        
+
+
+
         public async Task<List<User>> GetUsersByEvent(int eventId)
         {
             return await _context.Registrations

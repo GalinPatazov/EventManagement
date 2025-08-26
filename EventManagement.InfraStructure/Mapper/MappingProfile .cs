@@ -1,12 +1,8 @@
 ﻿using AutoMapper;
 using EventManagement.Core.DTOs;
 using EventManagement.Core.Models;
+using EventManagement.InfraStructure;
 using EventManagement.Services;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EventManagement.InfraStructure.Mapper
 {
@@ -15,21 +11,31 @@ namespace EventManagement.InfraStructure.Mapper
         public MappingProfile()
         {
             
-            CreateMap<Event, EventDTO>()
-                .ForMember(dest => dest.SpeakerName, opt => opt.MapFrom(src => src.SpeakerId.ToString()))
+            CreateMap<Event, EventResponseDto>()
+                .ForMember(dest => dest.SpeakerName, opt => opt.MapFrom(src => src.Speaker.Name))
                 .ReverseMap();
 
-            
-            CreateMap<User, UserDTO>().ReverseMap();
-
-         
-            CreateMap<Speaker, SpeakerDTO>().ReverseMap();
+            CreateMap<EventCreateDto, Event>().ReverseMap();
+            CreateMap<EventUpdateDto, Event>().ReverseMap();
 
             
-            CreateMap<Registration, RegistrationDTO>()
+            CreateMap<Registration, RegistrationResponseDto>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.User.FirstName + " " + src.User.LastName))
                 .ForMember(dest => dest.EventTitle, opt => opt.MapFrom(src => src.Event.Title))
                 .ReverseMap();
+
+            CreateMap<RegistrationCreateDto, Registration>().ReverseMap();
+            CreateMap<RegistrationUpdateDto, Registration>().ReverseMap();
+
+            
+            CreateMap<Speaker, SpeakerResponseDto>().ReverseMap();
+            CreateMap<SpeakerCreateDto, Speaker>().ReverseMap();
+            CreateMap<SpeakerUpdateDto, Speaker>().ReverseMap();
+
+            
+            CreateMap<User, UserResponseDto>().ReverseMap();
+            CreateMap<UserCreateDto, User>().ReverseMap();
+            CreateMap<UserUpdateDto, User>().ReverseMap();
         }
     }
 }

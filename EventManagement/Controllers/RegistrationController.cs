@@ -1,9 +1,10 @@
 ﻿using AutoMapper;
 using EventManagement.Core.DTOs;
-using EventManagement.InfraStructure;
 using EventManagement.Services.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EventManagement.Controllers
 {
@@ -12,42 +13,30 @@ namespace EventManagement.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly RegistrationService _regService;
-        private readonly IMapper _mapper;
 
-        public RegistrationController(RegistrationService regService, IMapper mapper)
+        public RegistrationController(RegistrationService regService)
         {
             _regService = regService;
-            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var regs = await _regService.GetAllAsync();
-            var dto = _mapper.Map<List<RegistrationDTO>>(regs);
-            return Ok(dto);
-        }
+        public async Task<IActionResult> GetAll() =>
+            Ok(await _regService.GetAllAsync());
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var reg = await _regService.GetByIdAsync(id);
-            if (reg == null) return NotFound();
-
-            var dto = _mapper.Map<RegistrationDTO>(reg);
-            return Ok(dto);
+            var result = await _regService.GetByIdAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(RegistrationDTO model)
+        public async Task<IActionResult> Create(RegistrationCreateDto model)
         {
             try
             {
-                var entity = _mapper.Map<Registration>(model);
-                var created = await _regService.AddAsync(entity);
-                var dto = _mapper.Map<RegistrationDTO>(created);
-
-                return CreatedAtAction(nameof(Get), new { id = dto.RegistrationId }, dto);
+                var created = await _regService.AddAsync(model);
+                return CreatedAtAction(nameof(Get), new { id = created.RegistrationId }, created);
             }
             catch (ValidationException ex)
             {
@@ -56,17 +45,14 @@ namespace EventManagement.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, RegistrationDTO model)
+        public async Task<IActionResult> Update(int id, RegistrationUpdateDto model)
         {
             if (id != model.RegistrationId) return BadRequest("Registration ID mismatch");
 
             try
             {
-                var entity = _mapper.Map<Registration>(model);
-                var updated = await _regService.UpdateAsync(entity);
-                var dto = _mapper.Map<RegistrationDTO>(updated);
-
-                return Ok(dto);
+                var updated = await _regService.UpdateAsync(model);
+                return Ok(updated);
             }
             catch (ValidationException ex)
             {
@@ -81,31 +67,16 @@ namespace EventManagement.Controllers
             return NoContent();
         }
 
-        
         [HttpGet("by-event/{eventId}")]
-        public async Task<IActionResult> GetByEvent(int eventId)
-        {
-            var regs = await _regService.GetByEvent(eventId);
-            var dto = _mapper.Map<List<RegistrationDTO>>(regs);
-            return Ok(dto);
-        }
+        public async Task<IActionResult> GetByEvent(int eventId) =>
+            Ok(await _regService.GetByEvent(eventId));
 
-        
         [HttpGet("by-user/{userId}")]
-        public async Task<IActionResult> GetByUser(int userId)
-        {
-            var regs = await _regService.GetByUser(userId);
-            var dto = _mapper.Map<List<RegistrationDTO>>(regs);
-            return Ok(dto);
-        }
+        public async Task<IActionResult> GetByUser(int userId) =>
+            Ok(await _regService.GetByUser(userId));
 
-        
         [HttpGet("by-status")]
-        public async Task<IActionResult> GetByStatus(bool isRegistered)
-        {
-            var regs = await _regService.GetByStatus(isRegistered);
-            var dto = _mapper.Map<List<RegistrationDTO>>(regs);
-            return Ok(dto);
-        }
+        public async Task<IActionResult> GetByStatus(bool isRegistered) =>
+            Ok(await _regService.GetByStatus(isRegistered));
     }
 }

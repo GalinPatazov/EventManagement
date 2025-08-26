@@ -9,13 +9,19 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+
 builder.Services.AddDbContext<EventDbContext>(options =>
-    options.UseSqlite(builder.Configuration.GetConnectionString("DefaultConnection")));
+    options.UseSqlServer(
+        "Server=(localdb)\\MSSQLLocalDB;Database=EventManagementDb;Trusted_Connection=True;",
+        b => b.MigrationsAssembly("EventManagement.InfraStructure") // must match DbContext project
+    ));
+
+
 
 builder.Services.AddScoped<IEventManagementRepository, EventRepository>();
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ISpeakerRepository, SpeakerRepository>();
-builder.Services.AddScoped<IRegistrationReposiory, RegistrationRepository>(); 
+builder.Services.AddScoped<IRegistrationReposiory, RegistrationRepository>();
 
 builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<UserService>();
@@ -24,7 +30,9 @@ builder.Services.AddScoped<RegistrationService>();
 
 builder.Services.AddControllers();
 
+
 builder.Services.AddValidatorsFromAssemblyContaining<EventValidator>();
+
 
 builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
 
@@ -40,6 +48,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-app.UseAuthorization(); 
+app.UseAuthorization();
 app.MapControllers();
+
 app.Run();

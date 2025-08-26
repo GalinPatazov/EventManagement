@@ -1,8 +1,7 @@
-﻿using AutoMapper;
-using EventManagement.Core.DTOs;
-using EventManagement.Core.Models;
+﻿using EventManagement.Core.DTOs;
 using EventManagement.Services.Services;
 using Microsoft.AspNetCore.Mvc;
+using FluentValidation;
 
 namespace EventManagement.Controllers
 {
@@ -11,73 +10,53 @@ namespace EventManagement.Controllers
     public class EventController : ControllerBase
     {
         private readonly EventService _eventService;
-        private readonly IMapper _mapper;
 
-        public EventController(EventService eventService, IMapper mapper)
+        public EventController(EventService eventService)
         {
             _eventService = eventService;
-            _mapper = mapper;
         }
 
-        
         [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var events = await _eventService.GetAllAsync();
-            var eventDtos = _mapper.Map<List<EventDTO>>(events);
-            return Ok(eventDtos);
-        }
+        public async Task<IActionResult> GetAll() =>
+            Ok(await _eventService.GetAllAsync());
 
-        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var ev = await _eventService.GetByIdAsync(id);
-            if (ev == null) return NotFound();
-
-            var eventDto = _mapper.Map<EventDTO>(ev);
-            return Ok(eventDto);
+            var result = await _eventService.GetByIdAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
 
-        
         [HttpPost]
-        public async Task<IActionResult> Create(EventDTO model)
+        public async Task<IActionResult> Create(EventCreateDto model)
         {
             try
             {
-                var entity = _mapper.Map<Event>(model);
-                var created = await _eventService.AddAsync(entity);
-                var createdDto = _mapper.Map<EventDTO>(created);
-
-                return CreatedAtAction(nameof(Get), new { id = createdDto.EventId }, createdDto);
+                var created = await _eventService.AddAsync(model);
+                return CreatedAtAction(nameof(Get), new { id = created.EventId }, created);
             }
-            catch (FluentValidation.ValidationException ex)
+            catch (ValidationException ex)
             {
                 return BadRequest(ex.Errors);
             }
         }
 
-        
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, EventDTO model)
+        public async Task<IActionResult> Update(int id, EventUpdateDto model)
         {
             if (id != model.EventId) return BadRequest("Event ID mismatch");
 
             try
             {
-                var entity = _mapper.Map<Event>(model);
-                var updated = await _eventService.UpdateAsync(entity);
-                var updatedDto = _mapper.Map<EventDTO>(updated);
-
-                return Ok(updatedDto);
+                var updated = await _eventService.UpdateAsync(model);
+                return Ok(updated);
             }
-            catch (FluentValidation.ValidationException ex)
+            catch (ValidationException ex)
             {
                 return BadRequest(ex.Errors);
             }
         }
 
-        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -85,34 +64,16 @@ namespace EventManagement.Controllers
             return NoContent();
         }
 
-        
         [HttpGet("user/{userId}")]
-        public async Task<IActionResult> GetEventsByUser(int userId, bool upcomingOnly = true)
-        {
-            var events = await _eventService.GetEventsByUser(userId, upcomingOnly);
-            var eventDtos = _mapper.Map<List<EventDTO>>(events);
+        public async Task<IActionResult> GetEventsByUser(int userId, bool upcomingOnly = true) =>
+            Ok(await _eventService.GetEventsByUser(userId, upcomingOnly));
 
-            return Ok(eventDtos);
-        }
-
-        
         [HttpGet("{eventId}/users")]
-        public async Task<IActionResult> GetUsersByEvent(int eventId)
-        {
-            var users = await _eventService.GetUsersByEvent(eventId);
-            var userDtos = _mapper.Map<List<UserDTO>>(users);
+        public async Task<IActionResult> GetUsersByEvent(int eventId) =>
+            Ok(await _eventService.GetUsersByEvent(eventId));
 
-            return Ok(userDtos);
-        }
-
-        
         [HttpGet("upcoming")]
-        public async Task<IActionResult> GetUpcomingEventsWithSpeakers()
-        {
-            var events = await _eventService.GetUpcomingEventsWithSpeakers();
-            var eventDtos = _mapper.Map<List<EventDTO>>(events);
-
-            return Ok(eventDtos);
-        }
+        public async Task<IActionResult> GetUpcomingEventsWithSpeakers() =>
+            Ok(await _eventService.GetUpcomingEventsWithSpeakers());
     }
 }

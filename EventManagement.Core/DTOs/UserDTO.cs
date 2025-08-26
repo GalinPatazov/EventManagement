@@ -1,17 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EventManagement.Core.DTOs
+﻿namespace EventManagement.Core.DTOs
 {
-    public class UserDTO
+    public class UserBaseDto
     {
-        public int UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
+    }
+
+    public class UserCreateDto : UserBaseDto
+    {
+    }
+
+    public class UserUpdateDto : UserBaseDto
+    {
+        public int UserId { get; set; }
+    }
+
+    public class UserResponseDto : UserBaseDto
+    {
+        public int UserId { get; set; }
     }
 }

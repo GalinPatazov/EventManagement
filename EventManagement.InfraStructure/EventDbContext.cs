@@ -1,29 +1,24 @@
 ﻿using EventManagement.Core.Models;
 using EventManagement.Services;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EventManagement.InfraStructure
 {
-    public class EventDbContext: DbContext
+    public class EventDbContext : DbContext
     {
         public DbSet<Event> Events { get; set; }
-        public DbSet<User> Users{ get; set; }
+        public DbSet<User> Users { get; set; }
         public DbSet<Speaker> Speakers { get; set; }
         public DbSet<Registration> Registrations { get; set; }
-        public EventDbContext(DbContextOptions<EventDbContext> options) : base(options)
-        {
-        }
+
+        public EventDbContext(DbContextOptions<EventDbContext> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source=eventmanagement.db");
+                
+                optionsBuilder.UseSqlServer("Server=(localdb)\\MSSQLLocalDB;Database=EventManagementDb;Trusted_Connection=True;");
             }
         }
 
@@ -40,9 +35,6 @@ namespace EventManagement.InfraStructure
                 .HasOne(r => r.Event)
                 .WithMany(e => e.Registrations)
                 .HasForeignKey(r => r.EventId);
-
         }
-
-
     }
 }

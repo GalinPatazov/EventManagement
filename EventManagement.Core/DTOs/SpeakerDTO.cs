@@ -1,16 +1,23 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace EventManagement.Core.DTOs
+﻿namespace EventManagement.Core.DTOs
 {
-    public class SpeakerDTO
+    public class SpeakerBaseDto
     {
-        public int SpeakerID { get; set; }
         public string Name { get; set; }
-        public string Biography { get; set; }
-        public string Email { get; set; }
+        public string? Biography { get; set; }
+        public string? Email { get; set; }
+    }
+
+    public class SpeakerCreateDto : SpeakerBaseDto
+    {
+    }
+
+    public class SpeakerUpdateDto : SpeakerBaseDto
+    {
+        public int SpeakerId { get; set; }
+    }
+
+    public class SpeakerResponseDto : SpeakerBaseDto
+    {
+        public int SpeakerId { get; set; }
     }
 }

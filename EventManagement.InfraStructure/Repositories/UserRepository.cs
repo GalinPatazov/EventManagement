@@ -60,16 +60,16 @@ namespace EventManagement.InfraStructure.Repositories
             }
         }
 
-        
+
         public async Task<List<User>> GetUsersByEventId(int eventId)
         {
-            return await _context.Registrations
-                .Where(r => r.EventId == eventId)
-                .Select(r => r.User)
+            return await _context.Users
                 .Include(u => u.Registrations)
                 .ThenInclude(r => r.Event)
+                .Where(u => u.Registrations.Any(r => r.EventId == eventId))
                 .ToListAsync();
         }
+
 
 
         public async Task<List<User>> GetUsersByRegistrationStatus(bool isRegistered)

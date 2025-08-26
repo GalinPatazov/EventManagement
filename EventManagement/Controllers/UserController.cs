@@ -1,9 +1,9 @@
-﻿using AutoMapper;
-using EventManagement.Core.DTOs;
-using EventManagement.Services;
+﻿using EventManagement.Core.DTOs;
 using EventManagement.Services.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Mvc;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace EventManagement.Controllers
 {
@@ -12,42 +12,30 @@ namespace EventManagement.Controllers
     public class UserController : ControllerBase
     {
         private readonly UserService _userService;
-        private readonly IMapper _mapper;
 
-        public UserController(UserService userService, IMapper mapper)
+        public UserController(UserService userService)
         {
             _userService = userService;
-            _mapper = mapper;
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll()
-        {
-            var users = await _userService.GetAllAsync();
-            var dtos = _mapper.Map<List<UserDTO>>(users);
-            return Ok(dtos);
-        }
+        public async Task<IActionResult> GetAll() =>
+            Ok(await _userService.GetAllAsync());
 
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
-            var user = await _userService.GetByIdAsync(id);
-            if (user == null) return NotFound();
-
-            var dto = _mapper.Map<UserDTO>(user);
-            return Ok(dto);
+            var result = await _userService.GetByIdAsync(id);
+            return result == null ? NotFound() : Ok(result);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(UserDTO model)
+        public async Task<IActionResult> Create(UserCreateDto model)
         {
             try
             {
-                var entity = _mapper.Map<User>(model);
-                var created = await _userService.AddAsync(entity);
-                var dto = _mapper.Map<UserDTO>(created);
-
-                return CreatedAtAction(nameof(Get), new { id = dto.UserId }, dto);
+                var created = await _userService.AddAsync(model);
+                return CreatedAtAction(nameof(Get), new { id = created.UserId }, created);
             }
             catch (ValidationException ex)
             {
@@ -56,17 +44,14 @@ namespace EventManagement.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, UserDTO model)
+        public async Task<IActionResult> Update(int id, UserUpdateDto model)
         {
             if (id != model.UserId) return BadRequest("User ID mismatch");
 
             try
             {
-                var entity = _mapper.Map<User>(model);
-                var updated = await _userService.UpdateAsync(entity);
-                var dto = _mapper.Map<UserDTO>(updated);
-
-                return Ok(dto);
+                var updated = await _userService.UpdateAsync(model);
+                return Ok(updated);
             }
             catch (ValidationException ex)
             {
@@ -81,22 +66,12 @@ namespace EventManagement.Controllers
             return NoContent();
         }
 
-        
         [HttpGet("by-event/{eventId}")]
-        public async Task<IActionResult> GetUsersByEvent(int eventId)
-        {
-            var users = await _userService.GetUsersByEvent(eventId);
-            var dtos = _mapper.Map<List<UserDTO>>(users);
-            return Ok(dtos);
-        }
+        public async Task<IActionResult> GetUsersByEvent(int eventId) =>
+            Ok(await _userService.GetUsersByEvent(eventId));
 
-        
         [HttpGet("by-status")]
-        public async Task<IActionResult> GetUsersByStatus(bool isRegistered)
-        {
-            var users = await _userService.GetUsersByRegistrationStatus(isRegistered);
-            var dtos = _mapper.Map<List<UserDTO>>(users);
-            return Ok(dtos);
-        }
+        public async Task<IActionResult> GetUsersByStatus(bool isRegistered) =>
+            Ok(await _userService.GetUsersByRegistrationStatus(isRegistered));
     }
 }

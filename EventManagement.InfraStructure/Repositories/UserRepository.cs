@@ -18,7 +18,7 @@ namespace EventManagement.InfraStructure.Repositories
             _context = context;
         }
 
-        // CRUD операции
+        
 
         public async Task<User> Create(User model)
         {
@@ -60,9 +60,7 @@ namespace EventManagement.InfraStructure.Repositories
             }
         }
 
-        // Complex / Special Queries
-
-        // Всички потребители за конкретно събитие
+        
         public async Task<List<User>> GetUsersByEventId(int eventId)
         {
             return await _context.Registrations
@@ -73,13 +71,13 @@ namespace EventManagement.InfraStructure.Repositories
                 .ToListAsync();
         }
 
-        // Филтриране по статус на регистрацията
+
         public async Task<List<User>> GetUsersByRegistrationStatus(bool isRegistered)
         {
             if (isRegistered)
             {
                 return await _context.Registrations
-                    .Where(r => r != null) // всички съществуващи регистрации
+                    .Where(r => r != null) 
                     .Select(r => r.User)
                     .Distinct()
                     .Include(u => u.Registrations)
@@ -88,7 +86,7 @@ namespace EventManagement.InfraStructure.Repositories
             }
             else
             {
-                // Потребители без регистрации
+                
                 return await _context.Users
                     .Where(u => !u.Registrations.Any())
                     .ToListAsync();

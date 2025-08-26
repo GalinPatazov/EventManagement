@@ -14,7 +14,7 @@ namespace EventManagement.Services.Validators
         {
             RuleFor(s => s.Name).NotEmpty();
             RuleFor(s => s.Biography).NotEmpty();
-            RuleFor(s => s.Email).NotEmpty().EmailAddress();
+            RuleFor(s => s.Email).NotEmpty().EmailAddress().WithMessage("Invalid email format");
         }
     }
 }

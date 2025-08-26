@@ -21,7 +21,7 @@ namespace EventManagement.Services.Services
             _validator = validator;
         }
 
-        // CRUD
+        
         public async Task<List<Speaker>> GetAllAsync() => await _speakerRepo.GetAll();
         public async Task<Speaker> GetByIdAsync(int id) => await _speakerRepo.Get(id);
 
@@ -45,7 +45,7 @@ namespace EventManagement.Services.Services
 
         public async Task DeleteAsync(int id) => await _speakerRepo.Delete(id);
 
-        // Complex query
+        
         public async Task<List<Speaker>> GetSpeakersByEvent(int eventId) =>
             await _speakerRepo.GetSpeakersByEventId(eventId);
     }

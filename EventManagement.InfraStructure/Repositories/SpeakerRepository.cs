@@ -17,7 +17,7 @@ namespace EventManagement.InfraStructure.Repositories
             _context = context;
         }
 
-        // CRUD операции
+        
 
         public async Task<Speaker> Create(Speaker model)
         {
@@ -57,8 +57,7 @@ namespace EventManagement.InfraStructure.Repositories
             }
         }
 
-        // Complex / Special Query
-        // Всички спийкъри, които имат конкретно събитие
+        
         public async Task<List<Speaker>> GetSpeakersByEventId(int eventId)
         {
             return await _context.Speakers

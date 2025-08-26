@@ -19,7 +19,7 @@ namespace EventManagement.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/event
+        
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -28,7 +28,7 @@ namespace EventManagement.Controllers
             return Ok(eventDtos);
         }
 
-        // GET: api/event/{id}
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -39,7 +39,7 @@ namespace EventManagement.Controllers
             return Ok(eventDto);
         }
 
-        // POST: api/event
+        
         [HttpPost]
         public async Task<IActionResult> Create(EventDTO model)
         {
@@ -57,7 +57,7 @@ namespace EventManagement.Controllers
             }
         }
 
-        // PUT: api/event/{id}
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, EventDTO model)
         {
@@ -77,7 +77,7 @@ namespace EventManagement.Controllers
             }
         }
 
-        // DELETE: api/event/{id}
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -85,7 +85,7 @@ namespace EventManagement.Controllers
             return NoContent();
         }
 
-        // GET: api/event/user/{userId}?upcomingOnly=true
+        
         [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetEventsByUser(int userId, bool upcomingOnly = true)
         {
@@ -95,7 +95,7 @@ namespace EventManagement.Controllers
             return Ok(eventDtos);
         }
 
-        // GET: api/event/{eventId}/users
+        
         [HttpGet("{eventId}/users")]
         public async Task<IActionResult> GetUsersByEvent(int eventId)
         {
@@ -105,7 +105,7 @@ namespace EventManagement.Controllers
             return Ok(userDtos);
         }
 
-        // GET: api/event/upcoming
+        
         [HttpGet("upcoming")]
         public async Task<IActionResult> GetUpcomingEventsWithSpeakers()
         {

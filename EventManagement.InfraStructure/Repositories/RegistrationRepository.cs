@@ -17,7 +17,7 @@ namespace EventManagement.InfraStructure.Repositories
             _context = context;
         }
 
-        // CRUD операции
+        
 
         public async Task<Registration> Create(Registration model)
         {
@@ -59,9 +59,6 @@ namespace EventManagement.InfraStructure.Repositories
             }
         }
 
-        // Complex / Special Queries
-
-        // Всички регистрации за конкретно събитие
         public async Task<List<Registration>> GetRegistrationsByEventId(int eventId)
         {
             return await _context.Registrations
@@ -71,7 +68,7 @@ namespace EventManagement.InfraStructure.Repositories
                 .ToListAsync();
         }
 
-        // Всички регистрации за конкретен потребител
+
         public async Task<List<Registration>> GetRegistrationsByUserId(int userId)
         {
             return await _context.Registrations
@@ -81,8 +78,7 @@ namespace EventManagement.InfraStructure.Repositories
                 .ToListAsync();
         }
 
-        // Филтриране по статус (например, дали е регистриран)
-        // Тук можем да приемем isRegistered = true означава съществуваща регистрация
+        
         public async Task<List<Registration>> GetRegistrationsByStatus(bool isRegistered)
         {
             if (isRegistered)
@@ -91,7 +87,7 @@ namespace EventManagement.InfraStructure.Repositories
                     .Include(r => r.Event)
                     .ToListAsync();
             else
-                return new List<Registration>(); // няма "не-регистрирани" записи в таблицата
+                return new List<Registration>(); 
         }
     }
 }

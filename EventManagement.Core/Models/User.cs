@@ -10,7 +10,7 @@ namespace EventManagement.Services
         public string Email { get; set; }
         public DateTime DateOfBirth { get; set; }
 
-        public ICollection<Registration> Registrations { get; set; }
+        public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
         public User(int userId, string firstName, string lastNmae, string email) {
             UserId = userId;
             FirstName = firstName;

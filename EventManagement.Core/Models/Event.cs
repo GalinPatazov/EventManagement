@@ -12,7 +12,7 @@ namespace EventManagement.Core.Models
         public int SpeakerId { get; set; }
 
 
-        public Speaker? Speaker { get; set; }
+        public virtual Speaker Speaker { get; set; }
 
         public ICollection<Registration> Registrations { get; set; } = new List<Registration>();
 

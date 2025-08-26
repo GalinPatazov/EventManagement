@@ -12,7 +12,7 @@ namespace EventManagement.Services.Validators
     {
         public EventValidator()
         {
-            RuleFor(e => e.Title).NotEmpty().WithMessage("Title is required");
+            //RuleFor(e => e.Title).NotEmpty().WithMessage("Title is required");
             RuleFor(e => e.Date)
                 .Must(date => date > DateTime.Now)
                 .WithMessage("Event date must be in the future");

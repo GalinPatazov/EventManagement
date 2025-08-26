@@ -19,7 +19,7 @@ namespace EventManagement.InfraStructure.Repositories
             _context = context;
         }
 
-        // CRUD операции
+        
 
         public async Task<Event> Create(Event model)
         {
@@ -31,15 +31,15 @@ namespace EventManagement.InfraStructure.Repositories
         public async Task<Event> Get(int id)
         {
             return await _context.Events
-                .Include(e => e.Registrations)       // зарежда регистрациите
-                .ThenInclude(r => r.User)            // и потребителите
+                .Include(e => e.Registrations)       
+                .ThenInclude(r => r.User)            
                 .FirstOrDefaultAsync(e => e.EventId == id);
         }
 
         public async Task<List<Event>> GetAll()
         {
             return await _context.Events
-                .Include(e => e.Speaker)             // зарежда спийкъра
+                .Include(e => e.Speaker)             
                 .ToListAsync();
         }
 
@@ -60,9 +60,9 @@ namespace EventManagement.InfraStructure.Repositories
             }
         }
 
-        // Complex Queries
+        
 
-        // 1️⃣ Всички събития на даден потребител (с филтър за предстоящи или минали)
+        
         public async Task<List<Event>> GetEventsByUser(int userId, bool upcomingOnly)
         {
             var query = _context.Registrations
@@ -79,7 +79,7 @@ namespace EventManagement.InfraStructure.Repositories
             return await query.ToListAsync();
         }
 
-        // 2️⃣ Всички потребители за дадено събитие
+        
         public async Task<List<User>> GetUsersByEvent(int eventId)
         {
             return await _context.Registrations
@@ -88,7 +88,7 @@ namespace EventManagement.InfraStructure.Repositories
                 .ToListAsync();
         }
 
-        // 3️⃣ Предстоящи събития със спийкъра им
+        
         public async Task<List<Event>> GetUpcomingEventsWithSpeakers()
         {
             return await _context.Events

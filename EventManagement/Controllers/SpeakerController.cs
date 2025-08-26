@@ -20,7 +20,7 @@ namespace EventManagement.Controllers
             _mapper = mapper;
         }
 
-        // GET: api/speaker
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -29,7 +29,7 @@ namespace EventManagement.Controllers
             return Ok(dtos);
         }
 
-        // GET: api/speaker/{id}
+        
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(int id)
         {
@@ -40,7 +40,7 @@ namespace EventManagement.Controllers
             return Ok(dto);
         }
 
-        // POST: api/speaker
+        
         [HttpPost]
         public async Task<IActionResult> Create(SpeakerDTO model)
         {
@@ -58,7 +58,7 @@ namespace EventManagement.Controllers
             }
         }
 
-        // PUT: api/speaker/{id}
+        
         [HttpPut("{id}")]
         public async Task<IActionResult> Update(int id, SpeakerDTO model)
         {
@@ -78,7 +78,7 @@ namespace EventManagement.Controllers
             }
         }
 
-        // DELETE: api/speaker/{id}
+        
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
@@ -86,7 +86,7 @@ namespace EventManagement.Controllers
             return NoContent();
         }
 
-        // GET: api/speaker/by-event/{eventId}
+        
         [HttpGet("by-event/{eventId}")]
         public async Task<IActionResult> GetSpeakersByEvent(int eventId)
         {

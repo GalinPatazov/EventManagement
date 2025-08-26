@@ -81,7 +81,7 @@ namespace EventManagement.Controllers
             return NoContent();
         }
 
-        // GET: api/user/by-event/{eventId}
+        
         [HttpGet("by-event/{eventId}")]
         public async Task<IActionResult> GetUsersByEvent(int eventId)
         {
@@ -90,7 +90,7 @@ namespace EventManagement.Controllers
             return Ok(dtos);
         }
 
-        // GET: api/user/by-status?isRegistered=true
+        
         [HttpGet("by-status")]
         public async Task<IActionResult> GetUsersByStatus(bool isRegistered)
         {
